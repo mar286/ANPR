@@ -37,7 +37,7 @@ for path in paths.values():
             !mkdir {path}
 
 
-##   Download TF Models Pretrained Models from Tensorflow Model Zoo and Install TFOD
+## Download TF pre-trained models from Tensorflow Model Garden and install TF object detection
 
 if os.name=='nt':
     !pip install wget
@@ -76,7 +76,7 @@ if os.name == 'nt':
     !cd {paths['PRETRAINED_MODEL_PATH']} && tar -zxvf {PRETRAINED_MODEL_NAME+'.tar.gz'}
     
 
-## Create Label Map
+## Create label map
 
 labels = [{'name':'licence', 'id':1}]
 
@@ -88,7 +88,7 @@ with open(files['LABELMAP'], 'w') as f:
         f.write('}\n')
         
         
-## Create TF Records
+## Create TF records
 
 if not os.path.exists(files['TF_RECORD_SCRIPT']):
     !git clone https://github.com/nicknochnack/GenerateTFRecord {paths['SCRIPTS_PATH']}
@@ -97,7 +97,7 @@ if not os.path.exists(files['TF_RECORD_SCRIPT']):
 !python {files['TF_RECORD_SCRIPT']} -x {os.path.join(paths['IMAGE_PATH'], 'test')} -l {files['LABELMAP']} -o {os.path.join(paths['ANNOTATION_PATH'], 'test.record')} 
 
 
-## Copy Model Config to Training Folder
+## Copy model configuration to training folder
 
 if os.name =='posix':
     !cp {os.path.join(paths['PRETRAINED_MODEL_PATH'], PRETRAINED_MODEL_NAME, 'pipeline.config')} {os.path.join(paths['CHECKPOINT_PATH'])}
@@ -105,7 +105,7 @@ if os.name == 'nt':
     !copy {os.path.join(paths['PRETRAINED_MODEL_PATH'], PRETRAINED_MODEL_NAME, 'pipeline.config')} {os.path.join(paths['CHECKPOINT_PATH'])}
 
 
-## Update Config For Transfer Learning
+## Update config for transfer learning
 
 import tensorflow as tf
 from object_detection.utils import config_util
@@ -210,7 +210,8 @@ viz_utils.visualize_boxes_and_labels_on_image_array(
 plt.imshow(cv2.cvtColor(image_np_with_detections, cv2.COLOR_BGR2RGB))
 plt.show()
 
-## Apply OCR to detection
+
+## Apply OCR
 
 import easyocr
 
